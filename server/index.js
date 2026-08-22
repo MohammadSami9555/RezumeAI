@@ -2,22 +2,26 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import fs from "fs";
 import pdfParse from "pdf-parse";
 import mammoth from "mammoth";
 import OpenAI from "openai";
 
 const app = express();
 
+// =========================
+// MIDDLEWARE
+// =========================
+
 app.use(cors());
 app.use(express.json({ limit: "3mb" }));
+
 
 // =========================
 // FILE UPLOAD
 // =========================
 
 const upload = multer({
-  dest: "uploads/",
+  storage: multer.memoryStorage(),
   limits: {
     fileSize: 8 * 1024 * 1024,
   },
@@ -78,9 +82,7 @@ const tokens = (text) => {
           .toLowerCase()
           .match(/[a-z][a-z0-9+#./-]{2,}/g) || []
       )
-        .map((x) =>
-          x.replace(/[.,;:()]/g, "")
-        )
+        .map((x) => x.replace(/[.,;:()]/g, ""))
         .filter(
           (x) =>
             !STOP.has(x) &&
@@ -100,27 +102,19 @@ async function extract(file) {
     return "";
   }
 
-  if (
-    file.originalname
-      .toLowerCase()
-      .endsWith(".pdf")
-  ) {
-    const data = await pdfParse(
-      fs.readFileSync(file.path)
-    );
+  const fileName = file.originalname.toLowerCase();
 
+  // PDF
+  if (fileName.endsWith(".pdf")) {
+    const data = await pdfParse(file.buffer);
     return data.text;
   }
 
-  if (
-    file.originalname
-      .toLowerCase()
-      .endsWith(".docx")
-  ) {
-    const data =
-      await mammoth.extractRawText({
-        path: file.path,
-      });
+  // DOCX
+  if (fileName.endsWith(".docx")) {
+    const data = await mammoth.extractRawText({
+      buffer: file.buffer,
+    });
 
     return data.value;
   }
@@ -178,8 +172,7 @@ ${job.slice(0, 12000)}
       messages: [
         {
           role: "system",
-          content:
-            "Return strict JSON.",
+          content: "Return strict JSON.",
         },
         {
           role: "user",
@@ -203,16 +196,11 @@ function local(resume, job) {
   const jobTokens = tokens(job);
 
   const matched = jobTokens
-    .filter((x) =>
-      resumeTokens.includes(x)
-    )
+    .filter((x) => resumeTokens.includes(x))
     .slice(0, 25);
 
   const missing = jobTokens
-    .filter(
-      (x) =>
-        !resumeTokens.includes(x)
-    )
+    .filter((x) => !resumeTokens.includes(x))
     .slice(0, 25);
 
   const score = Math.max(
@@ -329,11 +317,19 @@ app.post(
   upload.single("resume"),
   async (req, res) => {
     try {
+      // Check file
+      if (!req.file) {
+        return res.status(400).json({
+          error: "Please upload a PDF or DOCX resume.",
+        });
+      }
+
       const text = await extract(req.file);
 
       const job =
         req.body.jobDescription || "";
 
+      // Check resume text
       if (!text.trim()) {
         return res.status(400).json({
           error:
@@ -341,6 +337,7 @@ app.post(
         });
       }
 
+      // Check job description
       if (!job.trim()) {
         return res.status(400).json({
           error:
@@ -348,16 +345,12 @@ app.post(
         });
       }
 
-      let output = await ai(
-        text,
-        job
-      );
+      // Try AI first
+      let output = await ai(text, job);
 
+      // Local fallback
       if (!output) {
-        output = local(
-          text,
-          job
-        );
+        output = local(text, job);
       }
 
       output.resumeText = text;
@@ -367,19 +360,12 @@ app.post(
           ? "AI"
           : "Local";
 
-      if (req.file) {
-        fs.unlink(
-          req.file.path,
-          () => {}
-        );
-      }
-
-      res.json(output);
+      return res.json(output);
 
     } catch (error) {
-      console.error(error);
+      console.error("ANALYZE ERROR:", error);
 
-      res.status(500).json({
+      return res.status(500).json({
         error:
           "Analysis failed: " +
           error.message,
@@ -396,7 +382,6 @@ app.post(
 app.post(
   "/api/cover-letter",
   async (req, res) => {
-
     try {
       const {
         resumeText,
@@ -406,12 +391,10 @@ app.post(
 
       // AI cover letter
       if (process.env.OPENAI_API_KEY) {
-
-        const client =
-          new OpenAI({
-            apiKey:
-              process.env.OPENAI_API_KEY,
-          });
+        const client = new OpenAI({
+          apiKey:
+            process.env.OPENAI_API_KEY,
+        });
 
         const response =
           await client.chat.completions.create({
@@ -455,7 +438,7 @@ ${JSON.stringify(analysis)}
       }
 
       // Local fallback
-      res.json({
+      return res.json({
         coverLetter: `Dear Hiring Manager,
 
 I am excited to apply for the ${
@@ -470,9 +453,12 @@ Mohammad Sami`,
       });
 
     } catch (error) {
-      console.error(error);
+      console.error(
+        "COVER LETTER ERROR:",
+        error
+      );
 
-      res.status(500).json({
+      return res.status(500).json({
         error:
           "Cover letter generation failed: " +
           error.message,
@@ -486,28 +472,31 @@ Mohammad Sami`,
 // HEALTH CHECK
 // =========================
 
-app.get(
-  "/api/health",
-  (req, res) => {
-    res.json({
-      ok: true,
-    });
-  }
-);
+app.get("/api/health", (req, res) => {
+  res.json({
+    ok: true,
+    message: "RezumeAI API is running",
+  });
+});
 
 
 // =========================
-// START SERVER
+// EXPORT FOR VERCEL
 // =========================
 
-const PORT =
-  process.env.PORT || 5000;
+export default app;
 
-app.listen(
-  PORT,
-  () => {
+
+// =========================
+// LOCAL DEVELOPMENT
+// =========================
+
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 5000;
+
+  app.listen(PORT, () => {
     console.log(
       `RezumeAI API running on http://localhost:${PORT}`
     );
-  }
-);
+  });
+}
