@@ -6,3 +6,5 @@ client/dist/
 server/uploads/
 server/.env
 .env
+
+.vercel
