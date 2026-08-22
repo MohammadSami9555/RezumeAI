@@ -1,0 +1,650 @@
+/* =========================
+   GLOBAL
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  color: #101114;
+  background: #f7f8fb;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+.nav {
+  height: 72px;
+  background: #fff;
+  border-bottom: 1px solid #e9ebef;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 6%;
+  gap: 50px;
+
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 800;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandIcon {
+  background: #2767e8;
+  color: #fff;
+
+  border-radius: 7px;
+  padding: 7px;
+
+  display: flex;
+}
+
+.nav nav {
+  display: flex;
+  gap: 32px;
+
+  flex: 1;
+  justify-content: center;
+}
+
+.nav a {
+  color: #666;
+  font-size: 14px;
+}
+
+
+/* =========================
+   BUTTONS
+========================= */
+
+.primary,
+.secondary {
+  border: 0;
+  border-radius: 9px;
+
+  padding: 11px 17px;
+
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primary {
+  background: #2767e8;
+  color: #fff;
+}
+
+.secondary {
+  background: #fff;
+  border: 1px solid #dfe3ea;
+}
+
+.large {
+  padding: 14px 23px;
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.hero,
+.dashboard {
+  max-width: 1120px;
+  margin: auto;
+
+  padding: 80px 25px;
+}
+
+
+/* =========================
+   EYEBROW
+========================= */
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #2767e8;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero h1 {
+  font-size: 72px;
+  line-height: 0.94;
+
+  letter-spacing: -0.055em;
+
+  margin: 22px 0;
+}
+
+.hero h1 span {
+  color: #2767e8;
+}
+
+.subtitle {
+  max-width: 760px;
+
+  font-size: 19px;
+  line-height: 1.6;
+
+  color: #68707d;
+}
+
+
+/* =========================
+   ANALYZER CARD
+========================= */
+
+.analyzerCard {
+  background: #fff;
+
+  border: 1px solid #e2e5eb;
+  border-radius: 18px;
+
+  padding: 28px;
+  margin-top: 42px;
+
+  box-shadow: 0 15px 50px #1420320f;
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 22px;
+}
+
+
+/* =========================
+   FORM FIELDS
+========================= */
+
+.field > label:first-child {
+  display: block;
+
+  font-size: 12px;
+  letter-spacing: 0.12em;
+
+  color: #707783;
+
+  margin-bottom: 10px;
+
+  font-weight: 700;
+}
+
+
+/* =========================
+   UPLOAD BOX
+========================= */
+
+.uploadBox {
+  height: 210px;
+
+  border: 2px dashed #dce1e8;
+  border-radius: 13px;
+
+  display: flex;
+
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 9px;
+
+  color: #6c7380;
+
+  cursor: pointer;
+}
+
+.uploadBox input {
+  display: none;
+}
+
+
+/* =========================
+   TEXTAREA
+========================= */
+
+.field textarea,
+.cover {
+  width: 100%;
+
+  border: 1px solid #dce1e8;
+  border-radius: 13px;
+
+  padding: 16px;
+
+  font: inherit;
+
+  outline: 0;
+}
+
+.field textarea {
+  height: 210px;
+  resize: vertical;
+}
+
+
+/* =========================
+   ACTIONS
+========================= */
+
+.actions {
+  grid-column: 1 / -1;
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+.error {
+  grid-column: 1 / -1;
+
+  background: #fff0f0;
+  color: #c52e2e;
+
+  border: 1px solid #ffcaca;
+  border-radius: 10px;
+
+  padding: 12px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+
+/* =========================
+   BACK BUTTON
+========================= */
+
+.back {
+  border: 0;
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #657080;
+
+  cursor: pointer;
+
+  margin-bottom: 28px;
+}
+
+
+/* =========================
+   ANALYSIS HEADER
+========================= */
+
+.analysisHead {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+}
+
+.analysisHead h1 {
+  font-size: 48px;
+
+  letter-spacing: -0.04em;
+
+  margin: 14px 0;
+}
+
+.analysisHead p {
+  color: #747c88;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+}
+
+
+/* =========================
+   SCORE CARD
+========================= */
+
+.scoreCard {
+  width: 190px;
+  height: 190px;
+
+  border: 1px solid #e1e4e9;
+
+  background: #fff;
+
+  border-radius: 16px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.scoreCard span {
+  font-size: 11px;
+
+  letter-spacing: 0.14em;
+
+  color: #737b86;
+}
+
+.scoreCard b {
+  font-size: 65px;
+
+  line-height: 1;
+
+  margin: 13px 0 5px;
+}
+
+.scoreCard small {
+  color: #7c838d;
+}
+
+
+/* =========================
+   TABS
+========================= */
+
+.tabs {
+  display: flex;
+
+  gap: 5px;
+
+  margin: 38px 0 22px;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tabs button {
+  border: 0;
+
+  background: transparent;
+
+  padding: 13px 18px;
+
+  color: #737b86;
+
+  cursor: pointer;
+}
+
+.tabs button.active {
+  color: #101114;
+
+  border-bottom: 2px solid #2767e8;
+
+  font-weight: 800;
+}
+
+
+/* =========================
+   GRID
+========================= */
+
+.grid {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 18px;
+}
+
+
+/* =========================
+   CARDS & PANELS
+========================= */
+
+.card,
+.panel {
+  background: #fff;
+
+  border: 1px solid #e2e5eb;
+
+  border-radius: 14px;
+
+  padding: 24px;
+}
+
+.card h3,
+.panel h2 {
+  margin: 0 0 18px;
+}
+
+.cardBody {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 9px;
+}
+
+
+/* =========================
+   KEYWORD PILLS
+========================= */
+
+.pill {
+  padding: 7px 11px;
+
+  border-radius: 7px;
+
+  font-size: 13px;
+
+  font-weight: 650;
+}
+
+.good {
+  background: #edf9f0;
+
+  color: #159447;
+}
+
+.bad {
+  border: 1px solid #ffb5b5;
+
+  color: #ef4141;
+
+  background: #fffafa;
+}
+
+
+/* =========================
+   STRENGTHS
+========================= */
+
+.line {
+  width: 100%;
+
+  display: flex;
+
+  gap: 9px;
+
+  line-height: 1.5;
+
+  color: #414751;
+}
+
+.line svg {
+  color: #19a25a;
+
+  flex: none;
+}
+
+
+/* =========================
+   RECOMMENDATIONS
+========================= */
+
+.recommend {
+  display: flex;
+
+  gap: 15px;
+
+  padding: 17px 0;
+
+  border-top: 1px solid #edf0f3;
+
+  line-height: 1.55;
+}
+
+.recommend b {
+  width: 28px;
+  height: 28px;
+
+  border-radius: 50%;
+
+  background: #edf3ff;
+
+  color: #2767e8;
+
+  display: grid;
+  place-items: center;
+
+  flex: none;
+}
+
+
+/* =========================
+   SECTIONS
+========================= */
+
+.sectionText {
+  color: #555e69;
+
+  line-height: 1.6;
+
+  white-space: pre-wrap;
+}
+
+
+/* =========================
+   COVER LETTER
+========================= */
+
+.panelTitle {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cover {
+  min-height: 350px;
+
+  resize: vertical;
+
+  line-height: 1.6;
+
+  margin-bottom: 12px;
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+.historyRow {
+  display: grid;
+
+  grid-template-columns: 1fr 100px 180px;
+
+  padding: 15px 0;
+
+  border-top: 1px solid #edf0f3;
+}
+
+.historyRow strong {
+  color: #2767e8;
+}
+
+.historyRow small {
+  color: #8a929d;
+}
+
+
+/* =========================
+   DOWNLOAD
+========================= */
+
+.bottomActions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: 20px;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 760px) {
+
+  .nav nav {
+    display: none;
+  }
+
+  .hero h1 {
+    font-size: 50px;
+  }
+
+  .analyzerCard,
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analysisHead {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 20px;
+  }
+
+  .scoreCard {
+    width: 100%;
+    height: 150px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}
